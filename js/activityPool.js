@@ -98,7 +98,6 @@ $(function() {
     });
 
     $(".legenda").find("li").each(function(){
-        //alert($(this).attr("data-color"));
         $(this).css({"background-color": appointment_color($(this).attr("data-color"))});
     });
 
@@ -107,7 +106,6 @@ $(function() {
         if($(this).is(":checked")){
             localStorage.agendas = "";
             localStorage.agrupar = "yes";
-            alert($("#btn_agenda .label_btn").text());
             $("#btn_agenda .label_btn").html("Agrupar solicita&ccedil;&atilde;o de agenda");
         }
         else{
