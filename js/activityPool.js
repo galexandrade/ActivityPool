@@ -5,13 +5,6 @@ $(function() {
         });
     }
     else{
-        /*
-        console.log(Date.now());
-        console.log(localStorage.id_token);
-        var isValid = KJUR.jws.JWS.verifyJWT(localStorage.id_token, null,{
-                                                alg: ['HS512']
-                                              });
-        console.log(isValid);*/
         $(".content").fadeIn("fast", function(){
             initialize();
         });
