@@ -1,0 +1,24 @@
+{
+  "name": "ActivityPool",
+  "description": "ActivityPool",
+  "version": "1.5",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "*://fluig.totvs.com/*/portal-servicos"
+  ],
+  "web_accessible_resources": [
+    "js/injection_script.js",
+    "js/activityPool.js",
+    "chrome-devtools://*"
+  ],
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}

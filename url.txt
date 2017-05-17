@@ -1,0 +1,22 @@
+http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?initialDate=2017-03-31&finalDate=2017-04-01&resources=YURI.CAVALCANTE 
+
+http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?initialDate=2017-03-31&finalDate=2017-04-01 
+
+http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/resources 
+
+
+http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning/load?date=2017-04-11&username=LILIAN.PEIXE
+http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning/load?date=2017-04-03&username=ALEX.ANDRADE
+
+
+
+/*PREENCHER VALORES*/
+$('#cliente-os').val('T55140-00');
+$("#cliente-os").change();
+$("#projeto-os").val("0000007995");
+$("#projeto-os").change();
+$("#produto-frente-os").val("2010067-2");
+$("#produto-frente-os").change();
+$("#local-atendimento-os").val("999");
+$("#local-atendimento-os").change();
+$("#atividades-os").val("Atendimento dedicado. Aporte de 2000 horas a partir de 20/02/2017");

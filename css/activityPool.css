@@ -1,0 +1,302 @@
+.content{
+    padding-top: 5px;
+}
+
+.btn{
+    margin: 0px;
+}
+
+.col-xs-6{
+    padding: 0px;
+    margin: 0px;
+}
+
+.search_bar{
+    padding-bottom: 3px;
+}
+
+.table{
+    margin-bottom: 0px;
+    min-width: 560px;
+}
+
+.table thead tr{
+    background-color: cornflowerblue;
+    color: whitesmoke;
+}
+
+.table tbody tr{
+    cursor: pointer;
+}
+
+.btn_apontar{
+    float: right;
+}
+
+.search_bar .input-group{
+    width: 100%;
+}
+
+.resource-label{
+    vertical-align: middle;
+    line-height: 2.5;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.title_label{
+    font-weight: bold;
+}
+
+.modal-body button{
+    width: 95%;
+}
+
+.modal-body button:first-child{
+    margin-right: 5px;
+}
+
+.appointment{
+    min-width: 500px;
+    min-height: 200px;
+}
+
+.form_appointment{
+    padding-left: 20px;
+}
+
+.btn_form_appointment button{
+    margin-left: 5px;
+    margin-bottom: 5px;
+    float: right;
+    width: 100%;
+}
+
+.hidden{
+    display: none;
+    visibility: hidden;
+}
+
+#btn_voltar{
+    margin-top: 5px;
+}
+
+#status{
+    line-height: 3.5;
+    text-align: right;
+}
+
+#status .label{
+    font-size: 10pt;
+}
+
+.frente_form, .email-cc-form{
+    padding-left: 5px;
+}
+
+.alert{
+    margin-top: 5px;
+    padding: 6px;
+}
+
+.close_alert{
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: -2px;
+}
+
+.close_alert:focus, .close_alert:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: .5;
+}
+
+.login{
+    min-width: 400px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.btn-outline-success {
+    color: #5cb85c;
+    background-image: none;
+    background-color: transparent;
+    border-color: #5cb85c;
+}
+
+.btn-outline-success:hover {
+    color: white;
+    background: #5CB85C;
+}
+
+#btn_cadastrar{
+    margin-top: 5px;
+}
+
+#btn_next_month{
+    margin-left: -22px;
+}
+
+.month_appointment{
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.month_navigation .description{
+    text-align: center;
+    font-weight: bold;
+    line-height: 2;
+    font-size: 16pt;
+}
+
+.day{
+    width:18px;
+    height: 17px;
+    border: 1px solid #595959;
+    border-right: 0px;
+    float: left;
+    cursor: pointer;
+}
+
+.last_day{
+    border-right: 1px solid #595959;
+}
+
+.day span{
+    margin-top: -15px;
+    display: block;
+    font-size: 8pt;
+    text-align: center;
+    width: 100%;
+}
+
+#calendar {
+    min-width: 600px;
+    margin: 0 auto;
+}
+
+.footer{
+    padding-top: 5px;
+    text-align: right;
+}
+
+.legenda{
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.legenda>li>a{
+    color: white;
+}
+
+.checkbox-send-email{
+    margin-top: -15px;
+}
+
+td.fc-bgevent{
+    opacity: 1;
+    background-color: rgba(174, 234, 255, 0.55);
+    box-shadow: 0 0 1px 1px rgba(3, 169, 244, 0.63) inset;
+
+}
+
+.fc-sun { background-color: #F8F8FF; }
+.fc-sat { background-color: #F8F8FF;  }
+
+.fc-day-top.fc-today>span.fc-day-number{
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+td.fc-bgevent>span.fc-day-number{
+    color: #FFFFFF;
+}
+
+.fc-unthemed td.fc-day.fc-today {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.legenda>li.feriado>a{
+    color: black;
+}
+
+/***********/
+/* The switch - the box around the slider */
+.footer_btns{
+    float: right;
+}
+
+.agrupar_agendas{
+    padding-top: 5px;
+    margin-right: 5px;
+    width: 150px;
+    float: right;
+}
+.agrupar_agendas span{
+    line-height: 1.8;
+    float: left;
+    display: block;
+    font-size: 9.5pt;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

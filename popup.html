@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Activity Pool</title>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/activityPool.css">
+        <link rel="stylesheet" href="css/fullcalendar.min.css">
+        <link rel="stylesheet" href="css/animate.css">
+
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/moment.min.js"></script>
+        <script type="text/javascript" src="js/fullcalendar.min.js"></script>
+        <script type="text/javascript" src="js/pt-br.js"></script>
+
+        <script language="JavaScript" type="text/javascript" src="js/jsrsasign-latest-all-min.js"></script>
+        <script language="JavaScript" type="text/javascript" src="js/json-sans-eval-min.js"></script>
+        <script language="JavaScript" type="text/javascript" src="js/jws-3.3.js"></script>
+
+        <script type="text/javascript" src="js/loadingoverlay.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap-notify.min.js"></script>
+        <script type="text/javascript" src="js/activityPool.js"></script>
+    </head>
+    <body>
+        <div class="row login" hidden>
+            <div class="col-xs-12 form_login">
+                <form id="form_login">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="username">Usu&aacute;rio</label>
+                            <input type="text" class="username form-control" id="username" placeholder="seuemail@dominio">
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label for="password">Senha</label>
+                            <input type="password" class="password form-control" id="password">
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <a href="#" id="esqueceu_senha">Esquiceu sua senha?</a>
+                    </div>
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-primary btn-block" id="btn_entrar">Entrar</button>
+                    </div>
+                    <div class="col-xs-12">
+                        <button class="btn btn-outline-success btn-block" id="btn_cadastrar">Cadastrar-se</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row content" hidden>
+            <div class="col-xs-12 search_bar" hidden>
+                <div class="col-xs-5 resource-label">
+                    <span class="title_label">Recurso:</span>
+                    <span class="resource" id="resource"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 month_navigation">
+                <div id='calendar'></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 loading" hidden>
+                <img src="loading.gif" alt="Loading" id="loading">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 appointment" hidden>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <button class="btn btn-default" id="btn_voltar">
+                                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="col-xs-9" id="status">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 form_appointment">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="date_planning">Data</label>
+                                <input type="date" id="date_planning" class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="cliente-os">Cliente</label>
+                                <input type="text" class="form-control" id="cliente-os" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label for="ticket">Ticket</label>
+                                <input type="text" class="form-control" id="ticket" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label for="projeto-os">Projeto</label>
+                                <input type="text" class="form-control" id="projeto-os" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group frente_form">
+                                <label for="projeto-frente-os">Frente</label>
+                                <input type="text" class="form-control" id="projeto-frente-os" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-12" hidden>
+                            <div class="form-group">
+                                <label for="produto-frente-os">Produto</label>
+                                <input type="text" class="form-control" id="produto-frente-os" value="2010067-2" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="local-atendimento-os">Local Atendimento</label>
+                                <input type="text" class="form-control" id="local-atendimento-os" value="999" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="atividades-os">Atividade</label>
+                                <textarea class="form-control" id="atividades-os" rows="3">Atendimento dedicado. Aporte de 2000 horas a partir de 20/02/2017</textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 agenda-form hidden">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="time-ini">Hora In&iacute;cio</label>
+                                        <input type="time" class="form-control" id="time-ini">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="time-fin">Hora Final</label>
+                                        <input type="time" class="form-control" id="time-fin">
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label for="time-interval">Intervalo</label>
+                                        <input type="time" class="form-control" id="time-interval">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label for="email">Enviar para</label>
+                                    <input type="text" class="form-control" id="email">
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group email-cc-form">
+                                    <label for="email-cc">Com c&oacute;pia para</label>
+                                    <input type="text" class="form-control" id="email-cc">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 btn_form_appointment">
+                            <button class="btn btn-lg btn-primary" id="btn_apontar">
+                                Preencher campos
+                                <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+                            </button>
+                            <button class="btn btn-lg btn-success hidden" id="btn_agenda">
+                                <span class="label_btn">Solicitar agenda</span>
+                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 footer hidden">
+                <div class="footer_btns">
+                    <button class="btn btn-success" id="btn_solicitar_agendas" disabled>
+                        Solicitar Agendas
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                    </button>
+                    <!--
+                    <a class="btn btn-default hidden" href="http://fluig.totvs.com/portal/p/10097/portal-servicos" target="_blank" role="button">Portal de Servi&ccedil;os</a>
+                    <a class="btn btn-default hidden" href="http://totvsjoi-hcm08:8080/portal/hcm/pool-recursos" target="_blank" role="button">Pool de Recursos</a>
+                    <a class="btn btn-default hidden" href="http://totvsjoi-hcm08.jv01.local:9090/tasks" target="_blank" role="button">Task  Manager</a>
+                    -->
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Links &uacute;teis <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://fluig.totvs.com/portal/p/10097/portal-servicos" target="_blank">Portal de Servi&ccedil;os</a></li>
+                            <li><a href="http://totvsjoi-hcm08:8080/portal/hcm/pool-recursos" target="_blank">Pool de Recursos</a></li>
+                            <li><a href="http://totvsjoi-hcm08.jv01.local:9090/tasks" target="_blank">Task  Manager</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Legenda <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu legenda">
+                            <li data-color="HOJE"><a href="#">HOJE</a></li>
+                            <li data-color="FERIADO" class="feriado"><a href="#">FERIADO</a></li>
+                            <li data-color="EM"><a href="#">EM - Empr&eacute;stimo</a></li>
+                            <li data-color="FE"><a href="#">FE - F&eacute;rias</a></li>
+                            <li data-color="FN"><a href="#">FN - Finalizado</a></li>
+                            <li data-color="PL"><a href="#">PL - Planejado</a></li>
+                            <li data-color="PV"><a href="#">PV - Previsto</a></li>
+                            <li data-color="RP"><a href="#">RP - Replanejado</a></li>
+                        </ul>
+                    </div>
+                    <a class="btn btn-default" href="http://fluig.totvs.com:80/portal/p/10097/ecmnavigation?app_ecm_navigation_doc=5164848" target="_blank" role="button">
+                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                    </a>
+                    <button class="btn btn-primary" id="logout">
+                        <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="agrupar_agendas">
+                    <span>Agrupar agendas</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle_agrupar_agendas">
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="spin" data-spin>
+        </div>
+    </body>
+</html>
+
