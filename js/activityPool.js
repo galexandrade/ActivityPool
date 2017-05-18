@@ -85,6 +85,14 @@ $(function() {
         });
     });
 
+    $("#btn_voltar_agrupadas").click(function(){
+        $(".agendas_agrupadas").fadeOut( "fast", function() {
+            $(".content").fadeIn("fast", function(){
+                $(".footer").removeClass("hidden");
+            });
+        });
+    });
+
     $("#btn_apontar").click(function(){
         fill_appointment_fields();
     });
@@ -116,6 +124,13 @@ $(function() {
     });
 
     $("#btn_solicitar_agendas").click(function(){
+        $(".footer").addClass("hidden");
+
+        $(".content").fadeOut( "fast", function() {
+            $(".agendas_agrupadas").fadeIn("fast", function(){});
+        });
+
+        /*
         var agendas = JSON.parse(localStorage.agendas);
         console.log(agendas);
         loading("show");
@@ -125,7 +140,7 @@ $(function() {
             type: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.id_token,
-                "Accept": "application/json, text/plain, */*",
+                "Accept": "application/json, text/plain, * / *",
                 "Content-Type": "application/json"
             },
             dataType: "json",
@@ -149,6 +164,7 @@ $(function() {
                 loading("hide");
             }
         });
+        */
     });
 });
 

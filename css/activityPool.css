@@ -77,7 +77,7 @@
     visibility: hidden;
 }
 
-#btn_voltar{
+#btn_voltar, #btn_voltar_agrupadas{
     margin-top: 5px;
 }
 
@@ -299,4 +299,31 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Agrupadas */
+.form_agendas_agrupadas .main_table, .form_agendas_agrupadas .btn_form_appointment{
+    margin-top: 10px;
+}
+
+.table_agendas{
+    max-height: 400px;
+    overflow: auto;
+}
+
+.table_agendas button{
+    float: right;
+}
+
+.table_agendas table tbody tr td{
+    line-height: 1.8;
+}
+
+.detail_table thead tr{
+    background-color: #efefef;
+    color: black;
+}
+
+.main_table .collapse td{
+    padding-top: 0px;
 }
