@@ -25,6 +25,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status == 'complete'
     &&  r.test(tab.url)) {
         console.debug("loading");
+        /*Arquivo de injecao de script deve ter apenas uma linha*/
         injectScript(tab.id, "js/injection_script.js");
     }
 });

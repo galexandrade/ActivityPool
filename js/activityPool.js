@@ -54,8 +54,6 @@ $(function() {
 
     $("#logout").click(function(){
         localStorage.removeItem("id_token");
-        localStorage.removeItem("agendas");
-        localStorage.removeItem("agrupar");
 
         $(".content").fadeOut("fast", function(){
             $(".footer").addClass("hidden");
@@ -89,6 +87,7 @@ $(function() {
         $(".agendas_agrupadas").fadeOut( "fast", function() {
             $(".content").fadeIn("fast", function(){
                 $(".footer").removeClass("hidden");
+                $(".main_table tbody").html("");
             });
         });
     });
@@ -109,31 +108,50 @@ $(function() {
         $(this).css({"background-color": appointment_color($(this).attr("data-color"))});
     });
 
-    $("#toggle_agrupar_agendas").change(function(){
-        $("#btn_solicitar_agendas").attr("disabled", "disabled");
-        if($(this).is(":checked")){
-            localStorage.agendas = "";
-            localStorage.agrupar = "yes";
-            $("#btn_agenda .label_btn").html("Agrupar solicita&ccedil;&atilde;o de agenda");
-        }
-        else{
-            localStorage.removeItem("agendas");
-            localStorage.agrupar = "false";
-            $("#btn_agenda .label_btn").html("Solicitar agenda");
-        }
-    });
+    $("#btn_agenda_agrupada").click(function(){
+        var agendas = [];
 
-    $("#btn_solicitar_agendas").click(function(){
-        $(".footer").addClass("hidden");
-
-        $(".content").fadeOut( "fast", function() {
-            $(".agendas_agrupadas").fadeIn("fast", function(){});
-        });
-
-        /*
-        var agendas = JSON.parse(localStorage.agendas);
-        console.log(agendas);
         loading("show");
+
+        $(".table_agendas .item").each(function(){
+            var tasks = [];
+            var ticket = $(this).find(".ticket").text();
+            var clientCode = $(this).find(".clientCode").text();
+            var clientName = $(this).find(".clientName").text();
+            var project = $(this).find(".project").text();
+            var front = $(this).find(".front").text();
+
+            $(this).next().find(".task").each(function(){
+                var data = $(this).find(".date").text().split("/");
+                if($(this).find(".check_send:checked").length > 0){
+                    tasks.push({
+                        "date" : data[2] + "-" + data[1] + "-" + data[0],
+                        "timeStart" : $(this).find(".timeStart").val() + ":00",
+                        "timeEnd" : $(this).find(".timeEnd").val() + ":00",
+                        "timeInterval" : $(this).find(".timeInterval").val() + ":00",
+                        "ticket" : ticket ,
+                        "project" : project,
+                        "front" : front,
+                        "clientCode" : clientCode,
+                        "clientName" : clientName,
+                        "activity" : $(this).find(".activity").text()
+                    });
+                }
+            });
+
+            if(tasks.length > 0){
+                agendas.push({
+                    "ticket" : ticket,
+                    "clientCode" : clientCode,
+                    "clientName" : clientName,
+                    "project" : project,
+                    "front" : front,
+                    "tasks" : tasks
+                });
+            }
+
+            console.log(agendas);
+        });
 
         $.ajax({
             url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/agendas/request",
@@ -144,7 +162,11 @@ $(function() {
                 "Content-Type": "application/json"
             },
             dataType: "json",
-            data: localStorage.agendas,
+            data: JSON.stringify({
+                "mailTo" : $("#email_agrupadas").val(),
+                "mailCC" : $("#email-cc_agrupadas").val(),
+                "items" : agendas
+            }),
             success: function(data) {
                 if (data.status == "success") {
                     notify(data.status.toUpperCase() + "!", data.message, "success");
@@ -153,18 +175,179 @@ $(function() {
                     notify(data.status.toUpperCase() + "!", data.message, "warning");
                 }
 
-                localStorage.agendas = "";
-                $("#btn_solicitar_agendas").attr("disabled", "disabled");
-
                 loading("hide");
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                notify(xhr.status.toUpperCase() + "!", thrownError, "danger");
+                notify(xhr.status + "!", thrownError, "danger");
 
                 loading("hide");
             }
         });
-        */
+    });
+
+    $("#btn_solicitar_agendas").click(function(){
+        $("#email_agrupadas").val($("#resource").attr("email_agenda"));
+        $("#email-cc_agrupadas").val("");
+
+        $(".footer").addClass("hidden");
+
+        $(".content").fadeOut( "fast", function() {
+            $(".agendas_agrupadas").fadeIn("fast", function(){});
+        });
+
+        var items = [];
+        var tasks = [];
+
+        tasks.push({
+            "date" : "2017-05-01",
+            "timeStart" : "08:00:00",
+            "timeEnd" : "18:00:00",
+            "timeInterval" : "01:30",
+            "ticket" : "111555" ,
+            "project" : "000258508",
+            "front" : "001",
+            "clientCode" : "T15544",
+            "clientName" : "Supergasbras",
+            "activity" : "Testerd sfds fds fds fds fds fds dfds"
+        });
+
+        tasks.push({
+            "date" : "2017-05-02",
+            "timeStart" : "08:00:00",
+            "timeEnd" : "18:00:00",
+            "timeInterval" : "01:30",
+            "ticket" : "111555" ,
+            "project" : "000258508",
+            "front" : "001",
+            "clientCode" : "T15544",
+            "clientName" : "Supergasbras",
+            "activity" : "Testerd sfds fds fds fds fds fds dfds"
+        });
+
+        tasks.push({
+            "date" : "2017-05-03",
+            "timeStart" : "08:00:00",
+            "timeEnd" : "18:00:00",
+            "timeInterval" : "01:30",
+            "ticket" : "111555" ,
+            "project" : "000258508",
+            "front" : "001",
+            "clientCode" : "T15544",
+            "clientName" : "Supergasbras",
+            "activity" : "Testerd sfds fds fds fds fds fds dfds"
+        });
+
+        items.push({
+            "ticket" : "111555",
+            "clientCode" : "T15544",
+            "clientName" : "Supergasbras",
+            "project" : "000258508",
+            "front" : "001",
+            "tasks" : tasks
+        });
+
+        var tasks = [];
+        tasks.push({
+            "date" : "2017-05-03",
+            "timeStart" : "08:00:00",
+            "timeEnd" : "18:00:00",
+            "timeInterval" : "01:30",
+            "ticket" : "111555" ,
+            "project" : "000258508",
+            "front" : "001",
+            "clientCode" : "T15544",
+            "clientName" : "Supergasbras",
+            "activity" : "Testerd sfds fds fds fds fds fds dfds"
+        });
+
+        items.push({
+            "ticket" : "255558",
+            "clientCode" : "T2225",
+            "clientName" : "Firjan",
+            "project" : "00026628",
+            "front" : "001",
+            "tasks" : tasks
+        });
+
+
+        $(".main_table tbody").html("");
+
+        var linha = "";
+
+        var tasks_head = "<tr class='expanded'>" +
+                            "<td colspan='5'>" +
+                                "<table class='table detail_table table-condensed table-bordered'>" +
+                                    "<thead>" +
+                                        "<tr>" +
+                                            "<th>Data</th>" +
+                                            "<th>Hr In&iacute;cio</th>" +
+                                            "<th>Hr Final</th>" +
+                                            "<th>Hr Interv</th>" +
+                                            "<th>Descri&ccedil;&atilde;o</th>" +
+                                            "<th></th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+        var tasks_footer =          "</tbody>" +
+                                "</table>" +
+                            "</td>" +
+                        "</tr>";
+
+        for (var i=0; i<items.length; i++){
+            linha = linha +
+                    "<tr class='item'>" +
+                        "<td class='clientCode'>" + items[i].clientCode + "</td>" +
+                        "<td class='clientName'>" + items[i].clientName + "</td>" +
+                        "<td class='ticket'>" + items[i].ticket + "</td>" +
+                        "<td class='project'>" + items[i].project + "</td>" +
+                        "<td class='front'>" + items[i].front + "</td>" +
+                    "</tr>";
+
+
+
+            var items_agenda = "";
+            for (var j=0; j<items[i].tasks.length; j++){
+                 var data = items[i].tasks[j].date.split("-");
+
+                 items_agenda = items_agenda +
+                                        "<tr class='task'>" +
+                                            "<td class='date'>" + data[2] + "/" + data[1] + "/" + data[0] + "</td>" +
+                                            "<td>" +
+                                                "<input type='time' title='Hor&aacute;rio in&iacute;cio' class='timeStart' value='" + items[i].tasks[j].timeStart + "'>" +
+                                            "</td>" +
+                                            "<td>" +
+                                                "<input type='time' title='Hor&aacute;rio t&eacute;rmino' class='timeEnd' value='" + items[i].tasks[j].timeEnd + "'>" +
+                                            "</td>" +
+                                            "<td>" +
+                                                "<input type='time' title='Tempo intervalo' class='timeInterval' value='" + items[i].tasks[j].timeInterval + "'>" +
+                                            "</td>" +
+                                            "<td class='activity'>" + items[i].tasks[j].activity + "</td>" +
+                                            "<td>" +
+                                                "<div class='btn-group' data-toggle='buttons'>" +
+                                                    "<label class='btn btn-primary active'>" +
+                                                        "<input type='checkbox' autocomplete='off' class='check_send' checked>" +
+                                                        "<span class='glyphicon glyphicon-ok'></span>" +
+                                                    "</label>" +
+                                                "</div>" +
+                                            "</td>" +
+                                        "</tr>";
+
+            }
+
+            linha = linha + tasks_head + items_agenda + tasks_footer;
+
+        }
+        $(".main_table tbody").append(linha);
+
+        $("#email_agrupadas").val($("#resource").attr("email_agenda"));
+        $("#email-cc_agrupadas").val("");
+
+        $(".footer").addClass("hidden");
+
+        $(".content").fadeOut( "fast", function() {
+            $(".agendas_agrupadas").fadeIn("fast", function(){});
+        });
     });
 });
 
@@ -206,22 +389,6 @@ function initialize(){
         if(day < 10)
             day = "0" + day;
         var today = now.getFullYear() + '-' + month + '-' + day;
-
-        if (!localStorage.agrupar || localStorage.agrupar != "yes"){
-            $("#toggle_agrupar_agendas").attr("checked", false);
-        }
-        else{
-            $("#toggle_agrupar_agendas").attr("checked", true);
-            $("#btn_agenda .label_btn").html("Agrupar solicita&ccedil;&atilde;o de agenda");
-        }
-
-        if (!localStorage.agendas){
-            $("#btn_solicitar_agendas").attr("disabled", "disabled");
-        }
-        else{
-            $("#btn_solicitar_agendas").removeAttr("disabled");
-        }
-
 
         $('#calendar').fullCalendar({
             defaultDate: today,
@@ -276,27 +443,27 @@ function send_appointment_email(){
         notify("Campos incorretos" + "!", "Campo Ticket n&atilde;o est&aacute; informado", "danger");
     }
     else{
-        if($("#toggle_agrupar_agendas").is(":checked")){
-            var agendas = {};
-            var log_existe = false;
-
-            if (localStorage.agendas != "") {
-                agendas = JSON.parse(localStorage.agendas);
-            }
-            else{
-                agendas = {items: []};
-            }
-
-            agendas.mailTo = $("#email").val();
-            agendas.mailCC = $("#email-cc").val();
-
-            for(var i = 0; i < agendas.items.length; i++){
-                if (agendas.items[i].ticket == $("#ticket").val() &&
-                    agendas.items[i].clientCode == $("#cliente-os").attr("cliente-os") &&
-                    agendas.items[i].project == $("#projeto-os").val() &&
-                    agendas.items[i].front == $("#projeto-frente-os").val()){
-
-                    agendas.items[i].tasks.push({
+        loading("show");
+        $("#btn_agenda").attr("disabled", "disabled");
+        $.ajax({
+            url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/agendas/request",
+            type: "POST",
+            headers: {
+                "Authorization": "Bearer " + localStorage.id_token,
+                "Accept": "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            },
+            dataType: "json",
+            data: JSON.stringify({
+                "mailTo" : $("#email").val(),
+                "mailCC" : $("#email-cc").val(),
+                "items" : [{
+                    "ticket" : $("#ticket").val(),
+                    "clientCode" : $("#cliente-os").attr("cliente-os"),
+                    "clientName" : $("#cliente-os").attr("cliente-name"),
+                    "project" : $("#projeto-os").val(),
+                    "front" : $("#projeto-frente-os").val(),
+                    "tasks" : [{
                         "date" : $("#date_planning").val(),
                         "timeStart" : $("#time-ini").val() + ":00",
                         "timeEnd" : $("#time-fin").val() + ":00",
@@ -307,90 +474,25 @@ function send_appointment_email(){
                         "clientCode" : $("#cliente-os").attr("cliente-os"),
                         "clientName" : $("#cliente-os").attr("cliente-name"),
                         "activity" : $("#atividades-os").val()
-                    });
-                    log_existe = true;
-                }
-            }
-
-            if(!log_existe){
-                agendas.items.push({
-                        "ticket" : $("#ticket").val(),
-                        "clientCode" : $("#cliente-os").attr("cliente-os"),
-                        "clientName" : $("#cliente-os").attr("cliente-name"),
-                        "project" : $("#projeto-os").val(),
-                        "front" : $("#projeto-frente-os").val(),
-                        "tasks" : [{
-                            "date" : $("#date_planning").val(),
-                            "timeStart" : $("#time-ini").val() + ":00",
-                            "timeEnd" : $("#time-fin").val() + ":00",
-                            "timeInterval" : $("#time-interval").val() + ":00",
-                            "ticket" : $("#ticket").val(),
-                            "project" : $("#projeto-os").val(),
-                            "front" : $("#projeto-frente-os").val(),
-                            "clientCode" : $("#cliente-os").attr("cliente-os"),
-                            "clientName" : $("#cliente-os").attr("cliente-name"),
-                            "activity" : $("#atividades-os").val()
-                        }]
-                    });
-            }
-
-            localStorage.agendas = JSON.stringify(agendas);
-            $("#btn_solicitar_agendas").removeAttr("disabled");
-
-            notify("Agrupado!", "&Eacute; necess&aacute;rio enviar as agendas agrupadas", "info");
-        }
-        else{
-            loading("show");
-            $("#btn_agenda").attr("disabled", "disabled");
-            $.ajax({
-                url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/agendas/request",
-                type: "POST",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.id_token,
-                    "Accept": "application/json, text/plain, */*",
-                    "Content-Type": "application/json"
-                },
-                dataType: "json",
-                data: JSON.stringify({
-                    "mailTo" : $("#email").val(),
-                    "mailCC" : $("#email-cc").val(),
-                    "items" : [{
-                        "ticket" : $("#ticket").val(),
-                        "clientCode" : $("#cliente-os").attr("cliente-os"),
-                        "clientName" : $("#cliente-os").attr("cliente-name"),
-                        "project" : $("#projeto-os").val(),
-                        "front" : $("#projeto-frente-os").val(),
-                        "tasks" : [{
-                            "date" : $("#date_planning").val(),
-                            "timeStart" : $("#time-ini").val() + ":00",
-                            "timeEnd" : $("#time-fin").val() + ":00",
-                            "timeInterval" : $("#time-interval").val() + ":00",
-                            "ticket" : $("#ticket").val(),
-                            "project" : $("#projeto-os").val(),
-                            "front" : $("#projeto-frente-os").val(),
-                            "clientCode" : $("#cliente-os").attr("cliente-os"),
-                            "clientName" : $("#cliente-os").attr("cliente-name"),
-                            "activity" : $("#atividades-os").val()
-                        }]
                     }]
-                }),
-                success: function(data) {
-                    if (data.status == "success") {
-                        notify(data.status.toUpperCase() + "!", data.message, "success");
-                    }
-                    else{
-                        notify(data.status.toUpperCase() + "!", data.message, "warning");
-                    }
-                    $("#btn_agenda").removeAttr("disabled");
-                    loading("hide");
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    notify(xhr.status.toUpperCase() + "!", thrownError, "danger");
-                    $("#btn_agenda").removeAttr("disabled");
-                    loading("hide");
+                }]
+            }),
+            success: function(data) {
+                if (data.status == "success") {
+                    notify(data.status.toUpperCase() + "!", data.message, "success");
                 }
-            });
-        }
+                else{
+                    notify(data.status.toUpperCase() + "!", data.message, "warning");
+                }
+                $("#btn_agenda").removeAttr("disabled");
+                loading("hide");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                notify(xhr.status.toUpperCase() + "!", thrownError, "danger");
+                $("#btn_agenda").removeAttr("disabled");
+                loading("hide");
+            }
+        });
     }
 }
 

@@ -319,11 +319,70 @@ input:checked + .slider:before {
     line-height: 1.8;
 }
 
+.detail_table{
+    margin-top:-9px;
+    margin-right:-9px;
+}
+
 .detail_table thead tr{
-    background-color: #efefef;
-    color: black;
+    background-color: #f9f9f9;
+    color: dimgrey;
+    cursor: auto;
+}
+
+.detail_table tbody tr{
+    cursor: auto;
+}
+
+.main_table>tbody>tr:not(.expanded){
+    border: 1px solid #ddd;
+    background-color: #f3f3f3;
+}
+
+.main_table .expanded{
+    cursor: auto;
+}
+
+.main_table .expanded:hover{
+    background-color: white;
 }
 
 .main_table .collapse td{
     padding-top: 0px;
+}
+
+.detail_table .btn-group{
+    float: right;
+}
+
+.detail_table .btn span.glyphicon {
+	opacity: 0;
+}
+
+.detail_table .btn.active span.glyphicon {
+	opacity: 1;
+}
+
+.detail_table input{
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+.label_email{
+    padding-top: 12px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.label_email_cc span{
+    display: block;
+    margin-right: -25px;
+}
+
+.email_header{
+}
+
+.email_header input{
+    margin-top:5px;
 }
