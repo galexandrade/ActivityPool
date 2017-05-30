@@ -302,8 +302,16 @@ input:checked + .slider:before {
 }
 
 /* Agrupadas */
-.form_agendas_agrupadas .main_table, .form_agendas_agrupadas .btn_form_appointment{
-    margin-top: 10px;
+.form_agendas_agrupadas .main_table{
+}
+
+#search_periodo{
+    margin-left: -20px;
+    margin-top: 5px;
+}
+
+#data_ini_periodo{
+    margin-left: 10px;
 }
 
 .table_agendas{
@@ -369,10 +377,15 @@ input:checked + .slider:before {
     border-right: 0px;
 }
 
-.label_email{
+.label_email, .label_periodo, .label_periodo_ate{
     padding-top: 12px;
     font-weight: bold;
     text-align: right;
+}
+
+.label_periodo_ate span{
+    display: block;
+    margin-left: 15px;
 }
 
 .label_email_cc span{
@@ -380,9 +393,10 @@ input:checked + .slider:before {
     margin-right: -25px;
 }
 
-.email_header{
+.email_header input, .periodo_header input{
+    margin-top:5px;
 }
 
-.email_header input{
-    margin-top:5px;
+.transparente{
+    opacity: 0.4;
 }

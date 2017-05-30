@@ -185,26 +185,31 @@
             <div class="col-xs-12 form_agendas_agrupadas">
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="col-xs-2">
+                        <div class="col-xs-1">
                             <button class="btn btn-default" id="btn_voltar_agrupadas">
                                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                             </button>
                         </div>
-                        <div class="col-xs-1 label_email">
-                            Email:
+                        <div class="col-xs-1 label_periodo">
+                            Per&iacute;odo:
                         </div>
-                        <div class="col-xs-4 email_header">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="email_agrupadas" placeholder="Email criação de agendas">
+                        <div class="col-xs-4">
+                            <div class="form-group periodo_header">
+                                <input type="date" class="form-control" id="data_ini_periodo" placeholder="Data inicial">
                             </div>
                         </div>
-                        <div class="col-xs-1 label_email label_email_cc">
-                            <span>Cc:</span>
+                        <div class="col-xs-1 label_periodo_ate">
+                            <span>At&eacute;:</span>
                         </div>
-                        <div class="col-xs-4 email_header">
-                            <div class="form-group email-cc-form">
-                                <input type="text" class="form-control" id="email-cc_agrupadas" placeholder="Emails em c&oacute;pia">
+                        <div class="col-xs-4">
+                            <div class="form-group periodo_header">
+                                <input type="date" class="form-control" id="data_fin_periodo" placeholder="Data Final">
                             </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <button class="btn btn-primary" id="search_periodo">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
                         </div>
                     </div>
                     <div class="col-xs-12">
@@ -289,6 +294,24 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-1 label_email">
+                            Email:
+                        </div>
+                        <div class="col-xs-5 email_header">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="email_agrupadas" placeholder="Email criação de agendas">
+                            </div>
+                        </div>
+                        <div class="col-xs-1 label_email label_email_cc">
+                            <span>Cc:</span>
+                        </div>
+                        <div class="col-xs-5 email_header">
+                            <div class="form-group email-cc-form">
+                                <input type="text" class="form-control" id="email-cc_agrupadas" placeholder="Emails em c&oacute;pia">
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12">

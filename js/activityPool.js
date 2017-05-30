@@ -1,3 +1,5 @@
+var plannings_month = [];
+
 $(function() {
     if (!localStorage.id_token){
         $(".login").fadeIn("fast", function(){
@@ -186,6 +188,7 @@ $(function() {
     });
 
     $("#btn_solicitar_agendas").click(function(){
+        /*  min="2017-05-01" max="2017-05-31" */
         $("#email_agrupadas").val($("#resource").attr("email_agenda"));
         $("#email-cc_agrupadas").val("");
 
@@ -195,150 +198,36 @@ $(function() {
             $(".agendas_agrupadas").fadeIn("fast", function(){});
         });
 
-        var items = [];
-        var tasks = [];
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        var day_ini = day - 7 > 0 ? day - 7 : 1;
+        var year = now.getFullYear();
 
-        tasks.push({
-            "date" : "2017-05-01",
-            "timeStart" : "08:00:00",
-            "timeEnd" : "18:00:00",
-            "timeInterval" : "01:30",
-            "ticket" : "111555" ,
-            "project" : "000258508",
-            "front" : "001",
-            "clientCode" : "T15544",
-            "clientName" : "Supergasbras",
-            "activity" : "Testerd sfds fds fds fds fds fds dfds"
+        if(month < 10)
+            month = "0" + month;
+        if(day < 10)
+            day = "0" + day;
+        if(day_ini < 10)
+            day_ini = "0" + day_ini;
+
+        var date_calendar_fin = new Date(year, (now.getMonth() + 1), 0);
+
+        var dt_ini_per = year + '-' + month + '-' + day_ini;
+        var dt_fin_per = year + '-' + month + '-' + day;
+
+        $('#data_ini_periodo').val(dt_ini_per);
+        $('#data_ini_periodo').attr({
+            "min": year + '-' + month + '-01',
+            "max": moment(date_calendar_fin).format('YYYY-MM-DD')
+        });
+        $('#data_fin_periodo').val(dt_fin_per);
+        $('#data_fin_periodo').attr({
+            "min": year + '-' + month + '-01',
+            "max": moment(date_calendar_fin).format('YYYY-MM-DD')
         });
 
-        tasks.push({
-            "date" : "2017-05-02",
-            "timeStart" : "08:00:00",
-            "timeEnd" : "18:00:00",
-            "timeInterval" : "01:30",
-            "ticket" : "111555" ,
-            "project" : "000258508",
-            "front" : "001",
-            "clientCode" : "T15544",
-            "clientName" : "Supergasbras",
-            "activity" : "Testerd sfds fds fds fds fds fds dfds"
-        });
-
-        tasks.push({
-            "date" : "2017-05-03",
-            "timeStart" : "08:00:00",
-            "timeEnd" : "18:00:00",
-            "timeInterval" : "01:30",
-            "ticket" : "111555" ,
-            "project" : "000258508",
-            "front" : "001",
-            "clientCode" : "T15544",
-            "clientName" : "Supergasbras",
-            "activity" : "Testerd sfds fds fds fds fds fds dfds"
-        });
-
-        items.push({
-            "ticket" : "111555",
-            "clientCode" : "T15544",
-            "clientName" : "Supergasbras",
-            "project" : "000258508",
-            "front" : "001",
-            "tasks" : tasks
-        });
-
-        var tasks = [];
-        tasks.push({
-            "date" : "2017-05-03",
-            "timeStart" : "08:00:00",
-            "timeEnd" : "18:00:00",
-            "timeInterval" : "01:30",
-            "ticket" : "111555" ,
-            "project" : "000258508",
-            "front" : "001",
-            "clientCode" : "T15544",
-            "clientName" : "Supergasbras",
-            "activity" : "Testerd sfds fds fds fds fds fds dfds"
-        });
-
-        items.push({
-            "ticket" : "255558",
-            "clientCode" : "T2225",
-            "clientName" : "Firjan",
-            "project" : "00026628",
-            "front" : "001",
-            "tasks" : tasks
-        });
-
-
-        $(".main_table tbody").html("");
-
-        var linha = "";
-
-        var tasks_head = "<tr class='expanded'>" +
-                            "<td colspan='5'>" +
-                                "<table class='table detail_table table-condensed table-bordered'>" +
-                                    "<thead>" +
-                                        "<tr>" +
-                                            "<th>Data</th>" +
-                                            "<th>Hr In&iacute;cio</th>" +
-                                            "<th>Hr Final</th>" +
-                                            "<th>Hr Interv</th>" +
-                                            "<th>Descri&ccedil;&atilde;o</th>" +
-                                            "<th></th>" +
-                                        "</tr>" +
-                                    "</thead>" +
-                                    "<tbody>";
-
-        var tasks_footer =          "</tbody>" +
-                                "</table>" +
-                            "</td>" +
-                        "</tr>";
-
-        for (var i=0; i<items.length; i++){
-            linha = linha +
-                    "<tr class='item'>" +
-                        "<td class='clientCode'>" + items[i].clientCode + "</td>" +
-                        "<td class='clientName'>" + items[i].clientName + "</td>" +
-                        "<td class='ticket'>" + items[i].ticket + "</td>" +
-                        "<td class='project'>" + items[i].project + "</td>" +
-                        "<td class='front'>" + items[i].front + "</td>" +
-                    "</tr>";
-
-
-
-            var items_agenda = "";
-            for (var j=0; j<items[i].tasks.length; j++){
-                 var data = items[i].tasks[j].date.split("-");
-
-                 items_agenda = items_agenda +
-                                        "<tr class='task'>" +
-                                            "<td class='date'>" + data[2] + "/" + data[1] + "/" + data[0] + "</td>" +
-                                            "<td>" +
-                                                "<input type='time' title='Hor&aacute;rio in&iacute;cio' class='timeStart' value='" + items[i].tasks[j].timeStart + "'>" +
-                                            "</td>" +
-                                            "<td>" +
-                                                "<input type='time' title='Hor&aacute;rio t&eacute;rmino' class='timeEnd' value='" + items[i].tasks[j].timeEnd + "'>" +
-                                            "</td>" +
-                                            "<td>" +
-                                                "<input type='time' title='Tempo intervalo' class='timeInterval' value='" + items[i].tasks[j].timeInterval + "'>" +
-                                            "</td>" +
-                                            "<td class='activity'>" + items[i].tasks[j].activity + "</td>" +
-                                            "<td>" +
-                                                "<div class='btn-group' data-toggle='buttons'>" +
-                                                    "<label class='btn btn-primary active'>" +
-                                                        "<input type='checkbox' autocomplete='off' class='check_send' checked>" +
-                                                        "<span class='glyphicon glyphicon-ok'></span>" +
-                                                    "</label>" +
-                                                "</div>" +
-                                            "</td>" +
-                                        "</tr>";
-
-            }
-
-            linha = linha + tasks_head + items_agenda + tasks_footer;
-
-        }
-        $(".main_table tbody").append(linha);
+        getAgendasPeriodo();
 
         $("#email_agrupadas").val($("#resource").attr("email_agenda"));
         $("#email-cc_agrupadas").val("");
@@ -349,6 +238,24 @@ $(function() {
             $(".agendas_agrupadas").fadeIn("fast", function(){});
         });
     });
+
+    $("#search_periodo").click(function(){
+        if($('#data_ini_periodo').val() > $('#data_fin_periodo').val()){
+            notify("Datas inv&aacute;lidas" + "!", "Data inicial maior que final", "warning");
+            return;
+        }
+
+        getAgendasPeriodo();
+    });
+
+    $(document).on("change", ".task .check_send", function(){
+        if($(this)[0].checked){
+            $(this).parent().parent().parent().parent().removeClass("transparente");
+        }
+        else{
+            $(this).parent().parent().parent().parent().addClass("transparente");
+        }
+    })
 });
 
 function initialize(){
@@ -524,7 +431,7 @@ function search(){
 
         var date_calendar = $("#calendar").fullCalendar('getDate');
         var date_calendar_year = moment(date_calendar ).format('YYYY');
-        var date_calendar_month = moment(date_calendar ).format('MM');
+        var date_calendar_month = moment(date_calendar).format('MM');
 
         var date_calendar_fin = new Date(date_calendar_year, date_calendar_month, 0);
 
@@ -535,6 +442,8 @@ function search(){
             url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?allocationTypes=EM,FE,FN,PL,PV,RP&allocations=EM&allocations=FE&allocations=FN&allocations=PL&allocations=PV&allocations=RP&finalDate=" + dt_fin + "&initialDate=" + dt_ini + "&issue=&login=&name=&ociosity=false&resources=" + $("#resource").attr("code") + "&teams=",
             dataType: "json",
             success: function(activityPool) {
+                plannings_month = activityPool.plannings;
+                console.log(plannings_month);
                 var event;
                 for (var i = 0; i < activityPool.plannings.length; i++){
 
@@ -650,6 +559,174 @@ function findEmailAgendaTo(){
     });
 }
 
+function getAgendasPeriodo(){
+    var items = [];
+    var tasks = [];
+
+    var dt_ini_per = $('#data_ini_periodo').val();
+    var dt_fin_per = $('#data_fin_periodo').val();
+
+    var event;
+    for (var i = 0; i < plannings_month.length; i++){
+        if(plannings_month[i].chamado == "TUUNKX"){
+            var ticket = "111555";
+            var project = "000258508";
+            var front = "001";
+            var clientCode = "T15544";
+            var clientName = "Supergasbras";
+            var activity = "Atendimento dedicado. Aporte de 2000 horas a partir de 20/02/2017";
+        }
+        else{
+            var ticket = "255558";
+            var project = "00026628";
+            var front = "001";
+            var clientCode = "T2225";
+            var clientName = "Firjan";
+            var activity = "Retrabalho de construção";
+        }
+
+        var inicio = new Date(plannings_month[i].inicio + "T10:00:00.0+0100");
+        var termino = new Date(plannings_month[i].termino + "T10:00:00.0+0100");
+
+
+        dt_ini_periodo = new Date(dt_ini_per + "T10:00:00.0+0100");
+        dt_fin_periodo = new Date(dt_fin_per + "T10:00:00.0+0100");
+
+        if (inicio < dt_ini_periodo){
+            inicio = dt_ini_periodo;
+        }
+
+        if (termino > dt_fin_periodo){
+            termino = dt_fin_periodo;
+        }
+
+        var item_existente = false;
+        var idx_item_existente;
+        for (var j = 0; j < items.length; j++){
+            if(items[j].ticket == ticket &&
+               items[j].clientCode == clientCode &&
+               items[j].project == project &&
+               items[j].front == front){
+                item_existente = true;
+                idx_item_existente = j;
+            }
+        }
+
+        var day_task = inicio.getDate();
+        while(day_task <= termino.getDate()){
+            //var dt_task = new Date(inicio.getFullYear() + "-" + (inicio.getMonth() + 1) + "-" + day_task + "T10:00:00.0+0100");
+            var dt_task = parseDate(day_task, inicio.getMonth() + 1, inicio.getFullYear());
+
+            /* Weekday */
+            if(dt_task.getDay() < 6 && dt_task.getDay() > 0){
+                var it_task = {
+                    "date" : parseDateToString(dt_task),
+                    "timeStart" : "08:00:00",
+                    "timeEnd" : "18:00:00",
+                    "timeInterval" : "01:30",
+                    "ticket" : ticket,
+                    "project" : project,
+                    "front" : front,
+                    "clientCode" : clientCode,
+                    "clientName" : clientName,
+                    "activity" : activity
+                };
+
+                if(item_existente){
+                    items[idx_item_existente].tasks.push(it_task);
+                }
+
+                tasks.push(it_task);
+            }
+
+            day_task++;
+        }
+
+        if(!item_existente && tasks.length > 0){
+            items.push({
+                "ticket" : ticket,
+                "clientCode" : clientCode,
+                "clientName" : clientName,
+                "project" : project,
+                "front" : front,
+                "tasks" : tasks
+            });
+        }
+
+        tasks = [];
+    }
+
+    $(".main_table tbody").html("");
+
+    var linha = "";
+
+    var tasks_head = "<tr class='expanded'>" +
+                        "<td colspan='5'>" +
+                            "<table class='table detail_table table-condensed table-bordered'>" +
+                                "<thead>" +
+                                    "<tr>" +
+                                        "<th>Data</th>" +
+                                        "<th>Hr In&iacute;cio</th>" +
+                                        "<th>Hr Final</th>" +
+                                        "<th>Hr Interv</th>" +
+                                        /* "<th>Descri&ccedil;&atilde;o</th>" + */
+                                        "<th></th>" +
+                                    "</tr>" +
+                                "</thead>" +
+                                "<tbody>";
+
+    var tasks_footer =          "</tbody>" +
+                            "</table>" +
+                        "</td>" +
+                    "</tr>";
+
+    for (var i=0; i<items.length; i++){
+        linha = linha +
+                "<tr class='item'>" +
+                    "<td class='clientCode'>" + items[i].clientCode + "</td>" +
+                    "<td class='clientName'>" + items[i].clientName + "</td>" +
+                    "<td class='ticket'>" + items[i].ticket + "</td>" +
+                    "<td class='project'>" + items[i].project + "</td>" +
+                    "<td class='front'>" + items[i].front + "</td>" +
+                "</tr>";
+
+
+
+        var items_agenda = "";
+        for (var j=0; j<items[i].tasks.length; j++){
+             var data = items[i].tasks[j].date.split("-");
+
+             items_agenda = items_agenda +
+                                    "<tr class='task' title='" + items[i].tasks[j].activity + "'>" +
+                                        "<td class='date'>" + data[2] + "/" + data[1] + "/" + data[0] + "</td>" +
+                                        "<td>" +
+                                            "<input type='time' title='Hor&aacute;rio in&iacute;cio' class='timeStart' value='" + items[i].tasks[j].timeStart + "'>" +
+                                        "</td>" +
+                                        "<td>" +
+                                            "<input type='time' title='Hor&aacute;rio t&eacute;rmino' class='timeEnd' value='" + items[i].tasks[j].timeEnd + "'>" +
+                                        "</td>" +
+                                        "<td>" +
+                                            "<input type='time' title='Tempo intervalo' class='timeInterval' value='" + items[i].tasks[j].timeInterval + "'>" +
+                                        "</td>" +
+                                        /* "<td class='activity'>" + items[i].tasks[j].activity + "</td>" +  */
+                                        "<td>" +
+                                            "<div class='btn-group' data-toggle='buttons'>" +
+                                                "<label class='btn btn-primary active'>" +
+                                                    "<input type='checkbox' autocomplete='off' class='check_send' checked>" +
+                                                    "<span class='glyphicon glyphicon-ok'></span>" +
+                                                "</label>" +
+                                            "</div>" +
+                                        "</td>" +
+                                    "</tr>";
+
+        }
+
+        linha = linha + tasks_head + items_agenda + tasks_footer;
+
+    }
+    $(".main_table tbody").append(linha);
+}
+
 function _doDecode() {
     var sJWS = localStorage.id_token;
     var a = sJWS.split(".");
@@ -734,4 +811,27 @@ function notify(title, message, type){
         onClosed: null,
         icon_type: 'class'
     });
+}
+
+function parseDateToString(dateToParse){
+    var month = (dateToParse.getMonth() + 1);
+    var day = dateToParse.getDate();
+    var year = dateToParse.getFullYear();
+
+    if(month < 10)
+        month = "0" + month;
+    if(day < 10)
+        day = "0" + day;
+
+    return year + "-" + month + "-" + day;
+}
+
+function parseDate(day, month, year){
+    console.info("parseDate", day, month, year);
+    if(parseInt(month) < 10)
+        month = "0" + parseInt(month);
+    if(parseInt(day) < 10)
+        day = "0" + parseInt(day);
+
+    return new Date(year + "-" + month + "-" + day + "T10:00:00.0+0100");
 }
