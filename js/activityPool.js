@@ -151,8 +151,6 @@ $(function() {
                     "tasks" : tasks
                 });
             }
-
-            console.log(agendas);
         });
 
         $.ajax({
@@ -303,6 +301,17 @@ function initialize(){
             eventLimit: false, // allow "more" link when too many events
             viewRender: function (view, element) {
                 search();
+
+                var date_calendar_year = moment($('#calendar').fullCalendar('getDate')).format('MM');
+                var now = new Date();
+                var month = (now.getMonth() + 1);
+
+                if (parseInt(date_calendar_year) != month) {
+                    $("#btn_solicitar_agendas").attr("disabled", "disabled");
+                }
+                else{
+                    $("#btn_solicitar_agendas").removeAttr("disabled");
+                }
             },
            eventClick: function(calEvent, jsEvent, view) {
                 var element_day = $(this).parent().parent().parent().parent().find(".fc-day-top");
@@ -439,11 +448,10 @@ function search(){
         var dt_fin = date_calendar_year + "-" + date_calendar_month + "-" + date_calendar_fin.getDate();
 
         $.ajax({
-            url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?allocationTypes=EM,FE,FN,PL,PV,RP&allocations=EM&allocations=FE&allocations=FN&allocations=PL&allocations=PV&allocations=RP&finalDate=" + dt_fin + "&initialDate=" + dt_ini + "&issue=&login=&name=&ociosity=false&resources=" + $("#resource").attr("code") + "&teams=",
+            url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?allocationTypes=EM,FE,FN,PL,PV,RP&allocations=EM&allocations=FE&allocations=FN&allocations=PL&allocations=PV&allocations=RP&finalDate=" + dt_fin + "&initialDate=" + dt_ini + "&issue=&login=&name=&ociosity=false&resources=" + $("#resource").attr("code") + "&teams=&detail=true",
             dataType: "json",
             success: function(activityPool) {
                 plannings_month = activityPool.plannings;
-                console.log(plannings_month);
                 var event;
                 for (var i = 0; i < activityPool.plannings.length; i++){
 
@@ -473,9 +481,10 @@ function appointment_detail(event, date){
     loading("show");
     $("#date_planning").val(date);
     $.ajax({
-        url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning/load?date=" + date + "&username=" + $("#resource").attr("code"),
+        url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning/load?date=" + date + "&username=" + $("#resource").attr("code") ,
         dataType: "json",
         success: function(activity) {
+            var is_found = false;
             for (var i = 0; i < activity.length; i++){
                 if (event.chamado == activity[i].issue){
                     $("#ticket").val(activity[i].issue);
@@ -513,10 +522,15 @@ function appointment_detail(event, date){
                         $("#status").html("<span class='label label-success'>N&atilde;o necessita solicita&ccedil;&atilde;o de agenda!</span>");
                     }
 
+                    is_found = true;
                     loading("hide");
-
                     break;
                 }
+            }
+
+            if (!is_found){
+                loading("hide");
+                notify("", "N&atilde;o foi poss&iacute;vel abrir a tarefa! Contate o suporte!", "danger");
             }
         }
    });
@@ -568,22 +582,12 @@ function getAgendasPeriodo(){
 
     var event;
     for (var i = 0; i < plannings_month.length; i++){
-        if(plannings_month[i].chamado == "TUUNKX"){
-            var ticket = "111555";
-            var project = "000258508";
-            var front = "001";
-            var clientCode = "T15544";
-            var clientName = "Supergasbras";
-            var activity = "Atendimento dedicado. Aporte de 2000 horas a partir de 20/02/2017";
-        }
-        else{
-            var ticket = "255558";
-            var project = "00026628";
-            var front = "001";
-            var clientCode = "T2225";
-            var clientName = "Firjan";
-            var activity = "Retrabalho de construção";
-        }
+        var ticket = plannings_month[i].chamado;
+        var project = plannings_month[i].cfpProject;
+        var front = plannings_month[i].pmsProject;
+        var clientCode = plannings_month[i].clientCode;
+        var clientName = plannings_month[i].clientName;
+        var activity = plannings_month[i].resumo;
 
         var inicio = new Date(plannings_month[i].inicio + "T10:00:00.0+0100");
         var termino = new Date(plannings_month[i].termino + "T10:00:00.0+0100");
@@ -655,6 +659,14 @@ function getAgendasPeriodo(){
 
         tasks = [];
     }
+
+    for (var i = 0; i < items.length; i++){
+        items[i].tasks.sort(order_tasks_by_date);
+    }
+
+    items.sort(order_items_by_date);
+
+    console.log(items);
 
     $(".main_table tbody").html("");
 
@@ -827,11 +839,38 @@ function parseDateToString(dateToParse){
 }
 
 function parseDate(day, month, year){
-    console.info("parseDate", day, month, year);
     if(parseInt(month) < 10)
         month = "0" + parseInt(month);
     if(parseInt(day) < 10)
         day = "0" + parseInt(day);
 
     return new Date(year + "-" + month + "-" + day + "T10:00:00.0+0100");
+}
+
+function order_tasks_by_date(a,b) {
+    var a_date = a.date.split("-");
+    var a_date = parseDate(a_date[2], a_date[1], a_date[0]);
+    var b_date = b.date.split("-");
+    var b_date = parseDate(b_date[2], b_date[1], b_date[0]);
+
+    if (a_date < b_date)
+        return -1;
+    else
+        return 1;
+
+    return 0;
+}
+
+function order_items_by_date(a,b) {
+    var a_date = a.tasks[0].date.split("-");
+    var a_date = parseDate(a_date[2], a_date[1], a_date[0]);
+    var b_date = b.tasks[0].date.split("-");
+    var b_date = parseDate(b_date[2], b_date[1], b_date[0]);
+
+    if (a_date < b_date)
+        return -1;
+    else
+        return 1;
+
+    return 0;
 }

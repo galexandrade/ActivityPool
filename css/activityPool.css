@@ -72,6 +72,10 @@
     width: 100%;
 }
 
+.form_appointment #date_planning{
+    width: 40%;
+}
+
 .hidden{
     display: none;
     visibility: hidden;
