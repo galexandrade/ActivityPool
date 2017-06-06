@@ -410,12 +410,6 @@ function send_appointment_email(){
         return;
     }
 
-    if ($("#ticket").val() == ""){
-        notify("Campos incorretos" + "!", "Campo Ticket n&atilde;o est&aacute; informado", "danger");
-        return;
-    }
-
-
     loading("show");
     $("#btn_agenda").attr("disabled", "disabled");
     $.ajax({
