@@ -118,8 +118,6 @@ $(function() {
     $("#btn_agenda_agrupada").click(function(){
         var agendas = [];
 
-        loading("show");
-
         $(".table_agendas .item").each(function(){
             var tasks = [];
             var ticket = $(this).find(".ticket").text();
@@ -157,6 +155,18 @@ $(function() {
                 });
             }
         });
+
+        if(agendas.length == 0){
+            notify("Nenhuma tarefa selecionada" + "!", "Selecione pelo menos uma atividade", "danger");
+            return;
+        }
+
+        if($("#email_agrupadas").val() == ""){
+            notify("Email n&atilde;o informado" + "!", "Informe um e-mail de destinat&aacute;rio", "danger");
+            return;
+        }
+
+        loading("show");
 
         $.ajax({
             url: API_URL + "v1/agendas/request",
@@ -270,8 +280,6 @@ $(function() {
     });
 
     $(document).on("change", ".check_select_all", function(){
-        console.log("AKI");
-        console.log($(this)[0].checked);
         if($(this)[0].checked){
             $(this).parent().parent().parent().parent().find(".check_send").each(function(){
                 $(this)[0].checked = true;
