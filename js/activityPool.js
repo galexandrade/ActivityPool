@@ -1,5 +1,10 @@
 var plannings_month = [];
 
+//Constants
+var API_HOST = "http://totvsjoi-hcm08.jv01.local:9090/";
+var API_URL = API_HOST + "task-manager/api/";
+var DATE_COMPLEMENT = "T10:00:00.0+0100";
+
 $(function() {
     if (!localStorage.id_token){
         $(".login").fadeIn("fast", function(){
@@ -15,7 +20,7 @@ $(function() {
     $("#form_login").submit(function(){
         loading("show");
         $.ajax({
-            url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/public/v1/account/authenticate",
+            url: API_URL + "public/v1/account/authenticate",
             type: "POST",
             headers: {
                 "Accept": "application/json, text/plain, */*",
@@ -45,12 +50,12 @@ $(function() {
     });
 
     $("#esqueceu_senha").click(function(){
-        window.open("http://totvsjoi-hcm08.jv01.local:9090/tasks/#/forget", "_blank");
+        window.open(API_HOST + "tasks/#/forget", "_blank");
         window.close();
     });
 
     $("#btn_cadastrar").click(function(){
-        window.open("http://totvsjoi-hcm08.jv01.local:9090/tasks/#/signup", "_blank");
+        window.open(API_HOST + "tasks/#/signup", "_blank");
         window.close();
     });
 
@@ -154,7 +159,7 @@ $(function() {
         });
 
         $.ajax({
-            url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/agendas/request",
+            url: API_URL + "v1/agendas/request",
             type: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.id_token,
@@ -186,7 +191,6 @@ $(function() {
     });
 
     $("#btn_solicitar_agendas").click(function(){
-        /*  min="2017-05-01" max="2017-05-31" */
         $("#email_agrupadas").val($("#resource").attr("email_agenda"));
         $("#email-cc_agrupadas").val("");
 
@@ -238,6 +242,16 @@ $(function() {
     });
 
     $("#search_periodo").click(function(){
+        if($('#data_ini_periodo').val() == ""){
+            notify("Data de in&iacute;cio inv&aacute;lida" + "!", "Informe uma data correta", "warning");
+            return;
+        }
+
+        if($('#data_ini_periodo').val() == ""){
+            notify("Data de final inv&aacute;lida" + "!", "Informe uma data correta", "warning");
+            return;
+        }
+
         if($('#data_ini_periodo').val() > $('#data_fin_periodo').val()){
             notify("Datas inv&aacute;lidas" + "!", "Data inicial maior que final", "warning");
             return;
@@ -248,16 +262,35 @@ $(function() {
 
     $(document).on("change", ".task .check_send", function(){
         if($(this)[0].checked){
-            $(this).parent().parent().parent().parent().removeClass("transparente");
+            $(this).parent().parent().removeClass("transparente");
         }
         else{
-            $(this).parent().parent().parent().parent().addClass("transparente");
+            $(this).parent().parent().addClass("transparente");
         }
-    })
+    });
+
+    $(document).on("change", ".check_select_all", function(){
+        console.log("AKI");
+        console.log($(this)[0].checked);
+        if($(this)[0].checked){
+            $(this).parent().parent().parent().parent().find(".check_send").each(function(){
+                $(this)[0].checked = true;
+                $(this).parent().parent().removeClass("transparente");
+            });
+        }
+        else{
+            $(this).parent().parent().parent().parent().find(".check_send").each(function(){
+                $(this)[0].checked = false;
+                $(this).parent().parent().addClass("transparente");
+            });
+        }
+    });
+
+
 });
 
+/* Initialize App */
 function initialize(){
-
     if (!_doDecode()){
         $(".login").fadeIn("fast", function(){
             $("#username").focus();
@@ -349,70 +382,110 @@ function initialize(){
 }
 
 function send_appointment_email(){
+    if ($("#date_planning").val() == ""){
+        notify("Campos incorretos" + "!", "Data inv&aacute;lida", "danger");
+        return;
+    }
+
+    if ($("#cliente-os").attr("cliente-os") == ""){
+        notify("Campos incorretos" + "!", "Cliente n&atilde;o informado! Consulte o PMO!", "danger");
+        return;
+    }
+
     if ($("#projeto-os").val() == ""){
         notify("Campos incorretos" + "!", "Campo Projeto n&atilde;o est&aacute; informado", "danger");
+        return;
     }
-    else if ($("#projeto-frente-os").val() == ""){
+
+    if ($("#projeto-frente-os").val() == ""){
         notify("Campos incorretos" + "!", "Campo Frente n&atilde;o est&aacute; informado", "danger");
+        return;
     }
-    else if ($("#ticket").val() == ""){
+
+    if ($("#ticket").val() == ""){
         notify("Campos incorretos" + "!", "Campo Ticket n&atilde;o est&aacute; informado", "danger");
+        return;
     }
-    else{
-        loading("show");
-        $("#btn_agenda").attr("disabled", "disabled");
-        $.ajax({
-            url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/agendas/request",
-            type: "POST",
-            headers: {
-                "Authorization": "Bearer " + localStorage.id_token,
-                "Accept": "application/json, text/plain, */*",
-                "Content-Type": "application/json"
-            },
-            dataType: "json",
-            data: JSON.stringify({
-                "mailTo" : $("#email").val(),
-                "mailCC" : $("#email-cc").val(),
-                "items" : [{
+
+
+    loading("show");
+    $("#btn_agenda").attr("disabled", "disabled");
+    $.ajax({
+        url: API_URL + "v1/agendas/request",
+        type: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.id_token,
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        },
+        dataType: "json",
+        data: JSON.stringify({
+            "mailTo" : $("#email").val(),
+            "mailCC" : $("#email-cc").val(),
+            "items" : [{
+                "ticket" : $("#ticket").val(),
+                "clientCode" : $("#cliente-os").attr("cliente-os"),
+                "clientName" : $("#cliente-os").attr("cliente-name"),
+                "project" : $("#projeto-os").val(),
+                "front" : $("#projeto-frente-os").val(),
+                "tasks" : [{
+                    "date" : $("#date_planning").val(),
+                    "timeStart" : $("#time-ini").val() + ":00",
+                    "timeEnd" : $("#time-fin").val() + ":00",
+                    "timeInterval" : $("#time-interval").val() + ":00",
                     "ticket" : $("#ticket").val(),
-                    "clientCode" : $("#cliente-os").attr("cliente-os"),
-                    "clientName" : $("#cliente-os").attr("cliente-name"),
                     "project" : $("#projeto-os").val(),
                     "front" : $("#projeto-frente-os").val(),
-                    "tasks" : [{
-                        "date" : $("#date_planning").val(),
-                        "timeStart" : $("#time-ini").val() + ":00",
-                        "timeEnd" : $("#time-fin").val() + ":00",
-                        "timeInterval" : $("#time-interval").val() + ":00",
-                        "ticket" : $("#ticket").val(),
-                        "project" : $("#projeto-os").val(),
-                        "front" : $("#projeto-frente-os").val(),
-                        "clientCode" : $("#cliente-os").attr("cliente-os"),
-                        "clientName" : $("#cliente-os").attr("cliente-name"),
-                        "activity" : $("#atividades-os").val()
-                    }]
+                    "clientCode" : $("#cliente-os").attr("cliente-os"),
+                    "clientName" : $("#cliente-os").attr("cliente-name"),
+                    "activity" : $("#atividades-os").val()
                 }]
-            }),
-            success: function(data) {
-                if (data.status == "success") {
-                    notify(data.status.toUpperCase() + "!", data.message, "success");
-                }
-                else{
-                    notify(data.status.toUpperCase() + "!", data.message, "warning");
-                }
-                $("#btn_agenda").removeAttr("disabled");
-                loading("hide");
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                notify(xhr.status.toUpperCase() + "!", thrownError, "danger");
-                $("#btn_agenda").removeAttr("disabled");
-                loading("hide");
+            }]
+        }),
+        success: function(data) {
+            if (data.status == "success") {
+                notify(data.status.toUpperCase() + "!", data.message, "success");
             }
-        });
-    }
+            else{
+                notify(data.status.toUpperCase() + "!", data.message, "warning");
+            }
+            $("#btn_agenda").removeAttr("disabled");
+            loading("hide");
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            notify(xhr.status.toUpperCase() + "!", thrownError, "danger");
+            $("#btn_agenda").removeAttr("disabled");
+            loading("hide");
+        }
+    });
 }
 
 function fill_appointment_fields(){
+    if ($("#date_planning").val() == ""){
+        notify("Campos incorretos" + "!", "Data inv&aacute;lida", "danger");
+        return;
+    }
+
+    if ($("#cliente-os").attr("cliente-os") == ""){
+        notify("Campos incorretos" + "!", "Cliente n&atilde;o informado! Consulte o PMO!", "danger");
+        return;
+    }
+
+    if ($("#projeto-os").val() == ""){
+        notify("Campos incorretos" + "!", "Campo Projeto n&atilde;o est&aacute; informado", "danger");
+        return;
+    }
+
+    if ($("#projeto-frente-os").val() == ""){
+        notify("Campos incorretos" + "!", "Campo Frente n&atilde;o est&aacute; informado", "danger");
+        return;
+    }
+
+    if ($("#ticket").val() == ""){
+        notify("Campos incorretos" + "!", "Campo Ticket n&atilde;o est&aacute; informado", "danger");
+        return;
+    }
+
     var data_planing = $("#date_planning").val().split("-");
     var commands = "loadApointment('" + $("#cliente-os").attr("cliente-os") + "', " +
                                   "'" + $("#cliente-os").attr("cliente-name") + "'," +
@@ -448,7 +521,7 @@ function search(){
         var dt_fin = date_calendar_year + "-" + date_calendar_month + "-" + date_calendar_fin.getDate();
 
         $.ajax({
-            url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning?allocationTypes=EM,FE,FN,PL,PV,RP&allocations=EM&allocations=FE&allocations=FN&allocations=PL&allocations=PV&allocations=RP&finalDate=" + dt_fin + "&initialDate=" + dt_ini + "&issue=&login=&name=&ociosity=false&resources=" + $("#resource").attr("code") + "&teams=&detail=true",
+            url: API_HOST + "pool-reader/api/rest/planning?allocationTypes=EM,FE,FN,PL,PV,RP&allocations=EM&allocations=FE&allocations=FN&allocations=PL&allocations=PV&allocations=RP&finalDate=" + dt_fin + "&initialDate=" + dt_ini + "&issue=&login=&name=&ociosity=false&resources=" + $("#resource").attr("code") + "&teams=&detail=true",
             dataType: "json",
             success: function(activityPool) {
                 plannings_month = activityPool.plannings;
@@ -457,7 +530,7 @@ function search(){
 
                     event = {title: activityPool.plannings[i].resumo,
                              start: activityPool.plannings[i].inicio,
-                             end: activityPool.plannings[i].termino + "T10:00:00.0+0100",
+                             end: activityPool.plannings[i].termino + DATE_COMPLEMENT,
                              backgroundColor: appointment_color(activityPool.plannings[i].alocacao),
                              chamado: activityPool.plannings[i].chamado};
 
@@ -481,7 +554,7 @@ function appointment_detail(event, date){
     loading("show");
     $("#date_planning").val(date);
     $.ajax({
-        url: "http://totvsjoi-hcm08.jv01.local:9090/pool-reader/api/rest/planning/load?date=" + date + "&username=" + $("#resource").attr("code") ,
+        url: API_HOST + "pool-reader/api/rest/planning/load?date=" + date + "&username=" + $("#resource").attr("code") ,
         dataType: "json",
         success: function(activity) {
             var is_found = false;
@@ -558,7 +631,7 @@ function appointment_color(alocation){
 function findEmailAgendaTo(){
     loading("show");
     $.ajax({
-        url: "http://totvsjoi-hcm08.jv01.local:9090/task-manager/api/v1/parameters?name=AGENDA_REQUEST_MAIL_TO",
+        url: API_URL + "v1/parameters?name=AGENDA_REQUEST_MAIL_TO",
         type: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.id_token,
@@ -589,12 +662,12 @@ function getAgendasPeriodo(){
         var clientName = plannings_month[i].clientName;
         var activity = plannings_month[i].resumo;
 
-        var inicio = new Date(plannings_month[i].inicio + "T10:00:00.0+0100");
-        var termino = new Date(plannings_month[i].termino + "T10:00:00.0+0100");
+        var inicio = new Date(plannings_month[i].inicio + DATE_COMPLEMENT);
+        var termino = new Date(plannings_month[i].termino + DATE_COMPLEMENT);
 
 
-        dt_ini_periodo = new Date(dt_ini_per + "T10:00:00.0+0100");
-        dt_fin_periodo = new Date(dt_fin_per + "T10:00:00.0+0100");
+        dt_ini_periodo = new Date(dt_ini_per + DATE_COMPLEMENT);
+        dt_fin_periodo = new Date(dt_fin_per + DATE_COMPLEMENT);
 
         if (inicio < dt_ini_periodo){
             inicio = dt_ini_periodo;
@@ -618,7 +691,6 @@ function getAgendasPeriodo(){
 
         var day_task = inicio.getDate();
         while(day_task <= termino.getDate()){
-            //var dt_task = new Date(inicio.getFullYear() + "-" + (inicio.getMonth() + 1) + "-" + day_task + "T10:00:00.0+0100");
             var dt_task = parseDate(day_task, inicio.getMonth() + 1, inicio.getFullYear());
 
             /* Weekday */
@@ -672,27 +744,29 @@ function getAgendasPeriodo(){
 
     var linha = "";
 
-    var tasks_head = "<tr class='expanded'>" +
-                        "<td colspan='5'>" +
-                            "<table class='table detail_table table-condensed table-bordered'>" +
-                                "<thead>" +
-                                    "<tr>" +
-                                        "<th>Data</th>" +
-                                        "<th>Hr In&iacute;cio</th>" +
-                                        "<th>Hr Final</th>" +
-                                        "<th>Hr Interv</th>" +
-                                        /* "<th>Descri&ccedil;&atilde;o</th>" + */
-                                        "<th></th>" +
-                                    "</tr>" +
-                                "</thead>" +
-                                "<tbody>";
-
-    var tasks_footer =          "</tbody>" +
-                            "</table>" +
-                        "</td>" +
-                    "</tr>";
-
     for (var i=0; i<items.length; i++){
+        var tasks_head = "<tr class='expanded'>" +
+                            "<td colspan='5'>" +
+                                "<table class='table detail_table table-condensed table-bordered'>" +
+                                    "<thead>" +
+                                        "<tr>" +
+                                            "<th class='text-center'>" +
+                                                "<input type='checkbox' name='checkbox_select_" + i + "' id='checkbox_select_" + i + "' class='css-checkbox check_select_all' checked='checked' />" +
+                                                "<label for='checkbox_select_" + i + "' class='css-label'></label>" +
+                                            "</th>" +
+                                            "<th class='vcenter'>Data</th>" +
+                                            "<th class='vcenter'>Hr In&iacute;cio</th>" +
+                                            "<th class='vcenter'>Hr Final</th>" +
+                                            "<th class='vcenter'>Hr Interv</th>" +
+                                        "</tr>" +
+                                    "</thead>" +
+                                    "<tbody>";
+
+        var tasks_footer =          "</tbody>" +
+                                "</table>" +
+                            "</td>" +
+                        "</tr>";
+
         linha = linha +
                 "<tr class='item'>" +
                     "<td class='clientCode'>" + items[i].clientCode + "</td>" +
@@ -710,6 +784,10 @@ function getAgendasPeriodo(){
 
              items_agenda = items_agenda +
                                     "<tr class='task' title='" + items[i].tasks[j].activity + "'>" +
+                                        "<td class='text-center'>" +
+                                            "<input type='checkbox' name='checkbox" + i + j + "' id='checkbox" + i + j + "' class='css-checkbox check_send' checked='checked' />" +
+                                            "<label for='checkbox" + i + j + "' class='css-label'></label>" +
+                                        "</td>" +
                                         "<td class='date'>" + data[2] + "/" + data[1] + "/" + data[0] + "</td>" +
                                         "<td>" +
                                             "<input type='time' title='Hor&aacute;rio in&iacute;cio' class='timeStart' value='" + items[i].tasks[j].timeStart + "'>" +
@@ -720,15 +798,6 @@ function getAgendasPeriodo(){
                                         "<td>" +
                                             "<input type='time' title='Tempo intervalo' class='timeInterval' value='" + items[i].tasks[j].timeInterval + "'>" +
                                         "</td>" +
-                                        /* "<td class='activity'>" + items[i].tasks[j].activity + "</td>" +  */
-                                        "<td>" +
-                                            "<div class='btn-group' data-toggle='buttons'>" +
-                                                "<label class='btn btn-primary active'>" +
-                                                    "<input type='checkbox' autocomplete='off' class='check_send' checked>" +
-                                                    "<span class='glyphicon glyphicon-ok'></span>" +
-                                                "</label>" +
-                                            "</div>" +
-                                        "</td>" +
                                     "</tr>";
 
         }
@@ -737,41 +806,6 @@ function getAgendasPeriodo(){
 
     }
     $(".main_table tbody").append(linha);
-}
-
-function _doDecode() {
-    var sJWS = localStorage.id_token;
-    var a = sJWS.split(".");
-    var uHeader = b64utos(a[0]);
-    var uClaim = b64utos(a[1]);
-    var pHeader = KJUR.jws.JWS.readSafeJSONString(uHeader);
-    var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
-    //var sHeader = JSON.stringify(pHeader, null, "  ");
-    //var sClaim = JSON.stringify(pClaim, null, "  ");
-
-    var dt_exp = new Date(pClaim.exp * 1000);
-    if (dt_exp >= new Date()){
-        $("#resource").text(pClaim.name);
-        $("#resource").attr({"code": pClaim.code,
-                             "iss": pClaim.iss,
-                             "exp": pClaim.exp,
-                             "key": pClaim.key,
-                             "email": pClaim.email});
-        return true;
-    }
-    else{
-        console.log("TOCKEN EXPIRADO");
-        return false;
-    }
-}
-
-function loading(action){
-    if (action == "show"){
-        $.LoadingOverlay("show");
-    }
-    else{
-        $.LoadingOverlay("hide");
-    }
 }
 
 function notify(title, message, type){
@@ -825,6 +859,42 @@ function notify(title, message, type){
     });
 }
 
+/***************************** UTILS Functions ******************************************/
+function _doDecode() {
+    var sJWS = localStorage.id_token;
+    var a = sJWS.split(".");
+    var uHeader = b64utos(a[0]);
+    var uClaim = b64utos(a[1]);
+    var pHeader = KJUR.jws.JWS.readSafeJSONString(uHeader);
+    var pClaim = KJUR.jws.JWS.readSafeJSONString(uClaim);
+    //var sHeader = JSON.stringify(pHeader, null, "  ");
+    //var sClaim = JSON.stringify(pClaim, null, "  ");
+
+    var dt_exp = new Date(pClaim.exp * 1000);
+    if (dt_exp >= new Date()){
+        $("#resource").text(pClaim.name);
+        $("#resource").attr({"code": pClaim.code,
+                             "iss": pClaim.iss,
+                             "exp": pClaim.exp,
+                             "key": pClaim.key,
+                             "email": pClaim.email});
+        return true;
+    }
+    else{
+        console.log("TOCKEN EXPIRADO");
+        return false;
+    }
+}
+
+function loading(action){
+    if (action == "show"){
+        $.LoadingOverlay("show");
+    }
+    else{
+        $.LoadingOverlay("hide");
+    }
+}
+
 function parseDateToString(dateToParse){
     var month = (dateToParse.getMonth() + 1);
     var day = dateToParse.getDate();
@@ -844,7 +914,7 @@ function parseDate(day, month, year){
     if(parseInt(day) < 10)
         day = "0" + parseInt(day);
 
-    return new Date(year + "-" + month + "-" + day + "T10:00:00.0+0100");
+    return new Date(year + "-" + month + "-" + day + DATE_COMPLEMENT);
 }
 
 function order_tasks_by_date(a,b) {

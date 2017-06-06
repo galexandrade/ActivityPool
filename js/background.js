@@ -1,4 +1,20 @@
+/*
+THIS FILE INSERT THE NEW FUNCTION ON THE "portal-servicos".
+*/
+
 var local_tabId;
+
+var r = /fluig\.totvs\.com\/.+\/portal-servicos/i;
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    console.debug(changeInfo, tab.url);
+    if (changeInfo.status == 'complete'
+    &&  r.test(tab.url)) {
+        console.debug("loading");
+        /*Arquivo de injecao de script deve ter apenas uma linha*/
+        injectScript(tab.id, "js/injection_script.js");
+    }
+});
+
 function injectScript(tabId, src) {
     local_tabId = tabId;
     var xhttp = new XMLHttpRequest();
@@ -18,14 +34,3 @@ function injectScript(tabId, src) {
     xhttp.open("GET", src, true);
     xhttp.send();
 }
-
-var r = /fluig\.totvs\.com\/.+\/portal-servicos/i;
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    console.debug(changeInfo, tab.url);
-    if (changeInfo.status == 'complete'
-    &&  r.test(tab.url)) {
-        console.debug("loading");
-        /*Arquivo de injecao de script deve ter apenas uma linha*/
-        injectScript(tab.id, "js/injection_script.js");
-    }
-});

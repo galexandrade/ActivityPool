@@ -1,7 +1,7 @@
 {
   "name": "ActivityPool",
   "description": "ActivityPool",
-  "version": "1.6",
+  "version": "1.7",
   "permissions": [
     "tabs",
     "activeTab",
