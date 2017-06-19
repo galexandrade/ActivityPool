@@ -12,9 +12,7 @@ $(function() {
         });
     }
     else{
-        $(".content").fadeIn("fast", function(){
-            initialize();
-        });
+        initialize();
     }
 
     $("#form_login").submit(function(){
@@ -305,87 +303,89 @@ function initialize(){
         });
     }
     else{
-        loading("show");
-        findEmailAgendaTo();
+        $(".content").fadeIn("fast", function(){
+            loading("show");
+            findEmailAgendaTo();
 
-        var now = new Date();
-        var month = (now.getMonth() + 1);
-        var day = now.getDate();
-        var year = now.getFullYear();
+            var now = new Date();
+            var month = (now.getMonth() + 1);
+            var day = now.getDate();
+            var year = now.getFullYear();
 
-        $(".month").attr({"num_month": month});
-        $(".year").attr({"num_year": year});
+            $(".month").attr({"num_month": month});
+            $(".year").attr({"num_year": year});
 
-        if(month < 10)
-            month = "0" + month;
-        if(day < 10)
-            day = "0" + day;
-        var today = now.getFullYear() + '-' + month + '-' + day;
+            if(month < 10)
+                month = "0" + month;
+            if(day < 10)
+                day = "0" + day;
+            var today = now.getFullYear() + '-' + month + '-' + day;
 
-        $('#date_planning').val(today);
-        $(".footer").removeClass("hidden");
+            $('#date_planning').val(today);
+            $(".footer").removeClass("hidden");
 
-        var now = new Date();
-        var month = (now.getMonth() + 1);
-        var day = now.getDate();
-        var year = now.getFullYear();
+            var now = new Date();
+            var month = (now.getMonth() + 1);
+            var day = now.getDate();
+            var year = now.getFullYear();
 
-        if(month < 10)
-            month = "0" + month;
-        if(day < 10)
-            day = "0" + day;
-        var today = now.getFullYear() + '-' + month + '-' + day;
+            if(month < 10)
+                month = "0" + month;
+            if(day < 10)
+                day = "0" + day;
+            var today = now.getFullYear() + '-' + month + '-' + day;
 
-        $('#calendar').fullCalendar({
-            defaultDate: today,
-            editable: true,
-            eventLimit: false, // allow "more" link when too many events
-            viewRender: function (view, element) {
-                search();
+            $('#calendar').fullCalendar({
+                defaultDate: today,
+                editable: true,
+                eventLimit: false, // allow "more" link when too many events
+                viewRender: function (view, element) {
+                    search();
 
-                var date_calendar_year = moment($('#calendar').fullCalendar('getDate')).format('MM');
-                var now = new Date();
-                var month = (now.getMonth() + 1);
+                    var date_calendar_year = moment($('#calendar').fullCalendar('getDate')).format('MM');
+                    var now = new Date();
+                    var month = (now.getMonth() + 1);
 
-                if (parseInt(date_calendar_year) != month) {
-                    $("#btn_solicitar_agendas").attr("disabled", "disabled");
-                }
-                else{
-                    $("#btn_solicitar_agendas").removeAttr("disabled");
-                }
-            },
-           eventClick: function(calEvent, jsEvent, view) {
-                var element_day = $(this).parent().parent().parent().parent().find(".fc-day-top");
+                    if (parseInt(date_calendar_year) != month) {
+                        $("#btn_solicitar_agendas").attr("disabled", "disabled");
+                    }
+                    else{
+                        $("#btn_solicitar_agendas").removeAttr("disabled");
+                    }
+                },
+               eventClick: function(calEvent, jsEvent, view) {
+                    var element_day = $(this).parent().parent().parent().parent().find(".fc-day-top");
 
-                var selected_day;
-                for (var i = 0; i < element_day.length; i++){
-                    var offset = element_day.eq(i).offset();
+                    var selected_day;
+                    for (var i = 0; i < element_day.length; i++){
+                        var offset = element_day.eq(i).offset();
 
-                    //alert(offset.left);
-                    if (offset.left > jsEvent.pageX){
-                        if (i == 0){
+                        //alert(offset.left);
+                        if (offset.left > jsEvent.pageX){
+                            if (i == 0){
+                                selected_day = element_day.eq(i);
+                            }
+                            else{
+                                selected_day = element_day.eq(i - 1);
+                            }
+                            break;
+                        }
+
+                        if (i == element_day.length - 1){
                             selected_day = element_day.eq(i);
                         }
-                        else{
-                            selected_day = element_day.eq(i - 1);
-                        }
-                        break;
                     }
 
-                    if (i == element_day.length - 1){
-                        selected_day = element_day.eq(i);
-                    }
+                    appointment_detail(calEvent, selected_day.attr("data-date"));
+                },
+                eventRender: function(event, element) {
+                    element.attr({
+                        title: event.title
+                    });
                 }
-
-                appointment_detail(calEvent, selected_day.attr("data-date"));
-            },
-            eventRender: function(event, element) {
-                element.attr({
-                    title: event.title
-                });
-            }
+            });
+            loading("hide");
         });
-        loading("hide");
     }
 }
 
